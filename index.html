@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Geovisor de Puentes Santiago de Cali</title>
+  
+  <link href="https://unpkg.com/maplibre-gl@^5.13.0/dist/maplibre-gl.css" rel="stylesheet" />
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <div id="app">
+    <!-- Header -->
+    <header class="header">
+      <div class="header-content">
+        <h1 class="header-title">🌉 Geovisor de Puentes Santiago de Cali</h1>
+      </div>
+    </header>
+
+    <!-- Main Container -->
+    <div class="main-container">
+      <!-- Sidebar Izquierdo -->
+      <aside class="sidebar sidebar-left">
+        <div class="panel-header">
+          <h2>Catálogo de Puentes</h2>
+          <button id="toggleSidebar" class="toggle-btn" title="Minimizar">−</button>
+        </div>
+        <div class="search-box">
+          <input type="text" id="searchBridges" placeholder="Buscar puente...">
+        </div>
+        <div id="bridgesList" class="bridges-list">
+          <!-- Se llenará dinámicamente -->
+        </div>
+      </aside>
+
+      <!-- Map Container -->
+      <div id="map" class="map-container"></div>
+
+      <!-- Sidebar Derecho (Información detallada) -->
+      <aside class="sidebar sidebar-right hidden">
+        <div class="panel-header">
+          <h2>Detalles del Puente</h2>
+          <button id="closeBridgeDetail" class="close-btn">✕</button>
+        </div>
+        <div id="bridgeDetail" class="bridge-detail">
+          <!-- Se llenará dinámicamente -->
+        </div>
+      </aside>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <p>Datos geográficos de puentes en Santiago de Cali | Sistema de Información Geográfica</p>
+    </footer>
+  </div>
+
+  <script src="https://unpkg.com/maplibre-gl@4.0.0/dist/maplibre-gl.js"></script>
+  <script type="module" src="/main.js"></script>
+</body>
+</html>
