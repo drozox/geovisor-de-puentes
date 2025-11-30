@@ -32,7 +32,7 @@ map.on("load", () => {
 let bridgesData = [];
 
 async function loadRealData() {
-  const response = await fetch("./puentes_unidos.json");
+  const response = await fetch("public/puentes_unidos.json");
   const rawData = await response.json();
 
   bridgesData = rawData.map((p, i) => {
