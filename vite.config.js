@@ -8,5 +8,9 @@ export default defineConfig({
   build: {
     outDir: "dist",
     minify: "terser",
+    sourcemap: false,
+  },
+  preview: {
+    port: 4173,
   },
 })
