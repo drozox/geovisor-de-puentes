@@ -114,20 +114,28 @@ function renderBridgesList(bridges) {
 
 // Seleccionar puente
 function selectBridge(bridge) {
-  currentSelectedBridge = bridge
+  currentSelectedBridge = bridge;
 
-  // Actualizar lista
-  renderBridgesList(bridgesData)
+  // 1. Resetear todos los marcadores al color original (Azul)
+  document.querySelectorAll('.bridge-path').forEach(path => {
+    path.setAttribute('fill', '#00d4ff');
+  });
 
-  // Mostrar detalles
-  showBridgeDetail(bridge)
+  // 2. Pintar el marcador seleccionado de Naranja
+  const activeMarker = document.querySelector(`#marker-${bridge.id} .bridge-path`);
+  if (activeMarker) {
+    activeMarker.setAttribute('fill', '#ffa200ff'); // Naranja
+  }
 
-  // Centrar mapa en el puente
+  // Actualizar lista y mostrar detalles (tu código actual)
+  renderBridgesList(bridgesData);
+  showBridgeDetail(bridge);
+
   map.flyTo({
     center: bridge.coordinates,
     zoom: 16,
     duration: 1000,
-  })
+  });
 }
 
 // Mostrar detalles del puente
@@ -314,52 +322,42 @@ document.getElementById("toggleSidebar").addEventListener("click", () => {
 })
 function addBridgeMarkers() {
   bridgesData.forEach((bridge) => {
-    // Contenedor del marcador
     const el = document.createElement("div");
     el.className = "marker";
+    el.id = `marker-${bridge.id}`; // ID único para cada marcador
 
-    // SVG visible y sin problemas de encoding
+    const colorDefecto = "#29bcdab4"; // Azul Cian
+
+    // stroke="#000000" añade el borde negro
+    // stroke-width="15" ajusta el grosor (proporcional al viewBox de 455)
+    // stroke-linejoin="round" para que las esquinas del borde sean suaves
     el.innerHTML = `
-      <svg viewBox="0 0 24 24" width="28" height="28">
-        <circle cx="12" cy="12" r="10" fill="#00d4ff" stroke="#0095aa" stroke-width="2"/>
-        <circle cx="12" cy="12" r="4" fill="white"/>
+      <svg viewBox="0 0 455 455" width="25" height="25" xmlns="http://www.w3.org/2000/svg">
+        <path 
+          class="bridge-path"
+          fill="${colorDefecto}" 
+          stroke="#000000" 
+          stroke-width="15" 
+          stroke-linejoin="round"
+          d="M455,114.25v-30H0v30h30v40H0v216.5h65.993c0,0,0-59.767,0-59.767c0-35.435,28.768-64.161,64.256-64.161 c35.488,0,64.256,28.726,64.256,64.161L194.5,370.75h65.996v-59.767c0-35.435,28.768-64.161,64.256-64.161 s64.256,28.726,64.256,64.161c0,0,0,59.767,0,59.767H455v-216.5h-30v-40H455z M212.5,154.25H60v-40h152.5V154.25z M395,154.25H242.5 v-40H395V154.25z"
+        />
       </svg>
     `;
 
-    // Estilos seguros
-    el.style.width = "32px";
-    el.style.height = "32px";
-    el.style.display = "flex";
-    el.style.alignItems = "center";
-    el.style.justifyContent = "center";
+    el.style.width = "35px";
+    el.style.height = "35px";
     el.style.cursor = "pointer";
-    el.style.pointerEvents = "auto";
-    el.style.zIndex = "1000";
+    el.style.filter = "drop-shadow(0px 3px 2px rgba(0,0,0,0.3))";
 
-    // Popup
-    const popup = new maplibregl.Popup({ offset: 25 }).setHTML(`
-  <div style="color: white; font-weight: 600;">
-    <strong>${bridge.name}</strong><br/>
-    <small style="color: #e5e5e5;">${bridge.type}</small>
-  </div>
-`);
-
-    // Marcador
-    const marker = new maplibregl.Marker({ element: el })
+    const marker = new maplibregl.Marker({ element: el, anchor: 'bottom' })
       .setLngLat(bridge.coordinates)
-      .setPopup(popup)
       .addTo(map);
 
-    // Click en el marcador
     el.addEventListener("click", (e) => {
       e.stopPropagation();
-      marker.togglePopup();   // abre/cierra popup
-      selectBridge(bridge);   // centra y muestra detalles
+      selectBridge(bridge);
     });
 
-    // Guardar referencia
     bridge.marker = marker;
   });
 }
-
-
