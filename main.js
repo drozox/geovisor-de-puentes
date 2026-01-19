@@ -35,48 +35,39 @@ async function loadRealData() {
   const response = await fetch("https://raw.githubusercontent.com/drozox/geovisor-de-puentes/refs/heads/main/public/puentes_unidos.json");
   const rawData = await response.json();
 
-  bridgesData = rawData.map((p, i) => {
-    // Extraer coordenadas del campo SHAPE "(lon, lat)"
-    let coords = [0, 0];
+  // Diccionario de traducción
+  const stateMapping = {
+    'B': 'Bueno',
+    'R': 'Regular',
+    'M': 'Malo'
+  };
 
+  bridgesData = rawData.map((p, i) => {
+    // ... (mantener lógica de coordenadas igual)
+    let coords = [0, 0];
     if (p.SHAPE) {
       const match = p.SHAPE.match(/\((-?\d+(\.\d+)?),\s*(-?\d+(\.\d+)?)\)/);
-      if (match) {
-        coords = [parseFloat(match[1]), parseFloat(match[3])];
-      }
+      if (match) coords = [parseFloat(match[1]), parseFloat(match[3])];
     } else if (p.X && p.Y) {
       coords = [parseFloat(p.X), parseFloat(p.Y)];
     }
 
-    // Función para filtrar campos vacíos
-    const hasValue = (v) =>
-      v !== null && v !== undefined && v !== "" &&
-      !(typeof v === "object" && Object.keys(v).length === 0);
+    // Traducir el estado
+    const rawState = p.estado_super ? p.estado_super.trim().toUpperCase() : "";
+    const translatedState = stateMapping[rawState] || rawState || "Sin estado";
 
-    // Crear copia filtrada del raw con solo campos que tienen valor
-    const filteredRaw = Object.fromEntries(
-      Object.entries(p).filter(([k, v]) => hasValue(v))
-    );
-
-    // Construir objeto base
     let bridge = {
       id: i + 1,
       name: p.nombre?.trim() || "Sin nombre",
       type: p.tipo_puente_gen || "No definido",
       coordinates: coords,
-      state: p.estado_super || "Sin estado",
+      state: translatedState, // <--- Aquí ya guarda "Bueno", "Regular" o "Malo"
       built_year: p.CreationDate ? p.CreationDate.split(" ")[0] : "N/A",
       length: p.longitud_total_m ? p.longitud_total_m + " m" : "N/A",
       width: p.ancho_tablero_m ? p.ancho_tablero_m + " m" : "N/A",
-      description: `Puente ubicado en ${p.via || "vía desconocida"}. Inspector: ${p.inspector || "N/A"}`,
-      raw: filteredRaw
+      description: `Puente ubicado en ${p.via || "vía desconocida"}.`,
+      raw: p
     };
-
-    // Filtrar también campos vacíos dentro del propio objeto construido
-    bridge = Object.fromEntries(
-      Object.entries(bridge).filter(([k, v]) => hasValue(v))
-    );
-
     return bridge;
   });
 
