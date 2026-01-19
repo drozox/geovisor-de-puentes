@@ -134,9 +134,16 @@ function showBridgeDetail(bridge) {
   const sidebarRight = document.querySelector(".sidebar-right");
   const detailContainer = document.getElementById("bridgeDetail");
 
-  let stateColor = "#22c55e";
-  if (bridge.state === "Mantenimiento") stateColor = "#f59e0b";
-  if (bridge.state === "Cerrado") stateColor = "#ef4444";
+  let stateColor = "#22c55e"; // Verde por defecto (Bueno)
+  let bgColor = "rgba(34, 197, 94, 0.2)"; // Fondo verde claro
+  
+  if (bridge.state === "Regular") {
+    stateColor = "#f59e0b";
+    bgColor = "rgba(245, 158, 11, 0.2)"; // Fondo naranja claro
+  } else if (bridge.state === "Malo") {
+    stateColor = "#ef4444";
+    bgColor = "rgba(239, 68, 68, 0.2)"; // Fondo rojo claro
+  }
 
   // Función para formatear claves del raw
   const formatLabel = (key) => {
@@ -248,7 +255,7 @@ if (key === "fotos") {
       <div class="detail-value">
         <span class="detail-badge"
           style="
-            background-color: rgba(${stateColor === "#22c55e" ? "34, 197, 94" : stateColor === "#f59e0b" ? "245, 158, 11" : "239, 68, 68"}, 0.2);
+            background-color: ${bgColor};
             color: ${stateColor};
           ">
           ${bridge.state}
