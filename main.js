@@ -67,7 +67,7 @@ async function loadRealData() {
       state: p.estado_super || "Sin estado",
       built_year: p.CreationDate ? p.CreationDate.split(" ")[0] : "N/A",
       length: p.longitud_total_m ? p.longitud_total_m + " m" : "N/A",
-      width: p.ancho_entrebordillos_m ? p.ancho_entrebordillos_m + " m" : "N/A",
+      width: p.ancho_tablero_m ? p.ancho_tablero_m + " m" : "N/A",
       description: `Puente ubicado en ${p.via || "vía desconocida"}. Inspector: ${p.inspector || "N/A"}`,
       raw: filteredRaw
     };
